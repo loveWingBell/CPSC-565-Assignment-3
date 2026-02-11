@@ -88,7 +88,7 @@ namespace Antymology.Terrain
         /// </summary>
         private void GenerateAnts()
         {
-            throw new NotImplementedException();
+            SimulationManager.Instance.StartSimulation();
         }
 
         #endregion
