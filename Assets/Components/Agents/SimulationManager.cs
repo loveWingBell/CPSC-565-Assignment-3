@@ -93,6 +93,29 @@ namespace Antymology.Agents
 
         private void EvolveGenes()
         { }
+        
+        // Helper queries for AntBase ------------------------------
+
+        /// <summary>Returns true if any ant OTHER than 'self' is at (x,y,z).</summary>
+        public bool AnotherAntAt(int x, int y, int z, AntBase self)
+        {
+            foreach (var ant in allAnts)
+                if (ant != self && ant.GridX == x && ant.GridY == y && ant.GridZ == z)
+                    return true;
+            return false;
+        }
+
+        /// <summary>Returns a random ant OTHER than 'self' that shares (x,y,z), or null.</summary>
+        public AntBase RandomAntAt(int x, int y, int z, AntBase self)
+        {
+            List<AntBase> matches = new List<AntBase>();
+            foreach (var ant in allAnts)
+                if (ant != self && ant.GridX == x && ant.GridY == y && ant.GridZ == z)
+                    matches.Add(ant);
+            if (matches.Count == 0) return null;
+            return matches[Random.Range(0, matches.Count)];
+        }
+
         // Utility ------------------------------
 
         private int GetSurfaceY(int x, int z)
