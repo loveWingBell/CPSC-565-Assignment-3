@@ -9,6 +9,7 @@ namespace Antymology.Agents
     /// Should probably be a dark red cube . (will change later if it doesn't look good)
     /// </summary>
     public class WorkerAnt : AntBase
+    {
     
         protected override void Awake()
         {
@@ -29,7 +30,7 @@ namespace Antymology.Agents
         {
             QueenAnt queen = SimulationManager.Instance.Queen;
             if (queen == null) { base.MoveSpecial(); return; }
-
+            
             // Pick the neighbouring direction that brings us closest to the queen
             int bestDir = -1;
             float bestDist = float.MaxValue;
