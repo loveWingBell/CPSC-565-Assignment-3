@@ -22,10 +22,10 @@ namespace Antymology.Agents
 
         [Header("Timing")]
         [Tooltip("Seconds between simulation ticks")]
-        public float tickInterval = 0.3f;
+        public float tickInterval = 0.2f;
 
         [Tooltip("Maximum ticks before generation ends")]
-        public int maxTicksPerGeneration = 200;
+        public int maxTicksPerGeneration = 300;
 
         [Header("Evolution")]
         [Range(0f, 1f)] public float mutationRate = 0.1f;
@@ -148,7 +148,7 @@ namespace Antymology.Agents
             if (queenGenes != null)
                 System.Array.Copy(queenGenes, Queen.genes, queenGenes.Length);
             else
-                Queen.RandomiseGenes();
+            Queen.RandomiseGenes();
             allAnts.Add(Queen);
 
             // Spawn workers
@@ -169,11 +169,36 @@ namespace Antymology.Agents
             GameObject go = new GameObject(antName);
             T ant = go.AddComponent<T>();
 
-            // Place at a random surface location
-            int x = Random.Range(1, worldW - 1);
-            int z = Random.Range(1, worldW - 1);
-            int y = GetSurfaceY(x, z);
-            if (y < 0) y = 5;
+            // Find a safe spawn location (not on container, preferably near mulch)
+            int x = -1, z = -1, y = -1;
+            int attempts = 0;
+            
+            while (attempts < 100)
+            {
+                x = Random.Range(5, worldW - 5);
+                z = Random.Range(5, worldW - 5);
+                y = GetSurfaceY(x, z);
+                
+                if (y >= 0)
+                {
+                    AbstractBlock surface = WorldManager.Instance.GetBlock(x, y, z);
+                    // Skip if it's a container block
+                    if (!(surface is ContainerBlock))
+                    {
+                        // Good spawn - either mulch or grass/stone
+                        break;
+                    }
+                }
+                attempts++;
+            }
+            
+            // Fallback to center if no good spot found
+            if (attempts >= 100)
+            {
+                x = worldW / 2;
+                z = worldW / 2;
+                y = Mathf.Max(5, GetSurfaceY(x, z));
+            }
 
             ant.SetPosition(x, y, z);
             return ant;
@@ -199,6 +224,15 @@ namespace Antymology.Agents
             List<float[]> survivors = new List<float[]>();
             for (int i = 0; i < Mathf.Min(keepCount, workers.Count); i++)
                 survivors.Add((float[])workers[i].genes.Clone());
+
+            // Safety: if all ants died, reinitialize with random genes
+            if (survivors.Count == 0)
+            {
+                Debug.LogWarning("All ants died! Reinitializing with random genes.");
+                workerGenePool.Clear();
+                queenGenes = null;
+                return;
+            }
 
             workerGenePool.Clear();
             // Keep survivors unchanged

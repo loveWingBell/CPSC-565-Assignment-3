@@ -22,7 +22,7 @@ namespace Antymology.Agents
         {
             base.Awake();
 
-            maxHealth = 150f; // queen is heartier :)
+            maxHealth = 300f; // queen is heartier :)
             health    = maxHealth;
 
             // Visual: larger gold/yellow sphere
@@ -53,15 +53,18 @@ namespace Antymology.Agents
         private void TryPlaceNestBlock()
         {
             float cost = maxHealth / 3f;
-            if (health <= cost + 1f) return; // need to keep at least 1 hp
+            if (health <= cost + 10f) return; // need to keep at least 10 hp
 
             AbstractBlock current = WorldManager.Instance.GetBlock(GridX, GridY, GridZ);
             // Only place on non-container, non-nest blocks
-            if (current is ContainerBlock || current is NestBlock) return;
+            if (current is ContainerBlock || current is NestBlock || current is AirBlock) 
+                return;
 
             WorldManager.Instance.SetBlock(GridX, GridY, GridZ, new NestBlock());
             health -= cost;
             nestBlocksPlaced++;
+
+            Debug.Log($"Queen placed nest block #{nestBlocksPlaced} at ({GridX}, {GridY}, {GridZ})");
 
             // Move up since the block we're on was just replaced
             int newY = GetSurfaceY(GridX, GridZ);

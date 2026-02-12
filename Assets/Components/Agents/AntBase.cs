@@ -18,11 +18,11 @@ namespace Antymology.Agents
         public int GridZ { get; protected set; }
 
         // Health
-        public float maxHealth = 100f;
+        public float maxHealth = 200f;
         public float health;
 
         // Base health lost per tick (doubled on acidic blocks)
-        public float healthDecayPerTick = 5f;
+        public float healthDecayPerTick = 2f;
 
         // Genes: 6 weights
         // [0] move toward nearest mulch
