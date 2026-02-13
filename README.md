@@ -222,3 +222,5 @@ DJ Oamen. “How to Fix Pink Textures in Unity 6.” YouTube, October 27, 2024. 
 Mastering 2D cameras in unity: A tutorial for game developers | toptal®. Accessed February 13, 2026. https://www.toptal.com/developers/unity/2d-camera-in-unity. 
 
 Response to “How do I show that the ants are actually sharing health?”. Claude AI Sonnet 4.5 Extended. Anthropic. Accessed February 13, 2026.
+
+Response to “Taking the following camera code, how do I adjust it so that it would rotate if I right clicked and dragged on my mouse,but also when I use arrow keys?”. Claude AI Sonnet 4.5 Extended. Anthropic. Accessed February 13, 2026.

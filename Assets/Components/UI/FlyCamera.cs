@@ -9,91 +9,102 @@ namespace Antymology.UI
         /*
         Writen by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.  
         Converted to C# 27-02-13 - no credit wanted.
-        Simple flycam I made, since I couldn't find any others made public.  
-        Made simple to use (drag and drop, done) for regular keyboard layout  
-        wasd : basic movement
-        shift : Makes camera accelerate
-        space : Moves camera on X and Z axis only.  So camera doesn't gain any height*/
+        Simple flycam I made, since I couldn't find any others made public.*/
 
+        /// <summary>
+        /// Controls:
+        /// - WASD: Move forward/back/left/right
+        /// - Q/E: Move down/up
+        /// - Arrow Keys: Rotate camera
+        /// - Scroll Wheel: Change movement speed
+        /// - Hold Shift: Move faster
+        /// </summary>
 
-        public float mainSpeed = 40.0f; //regular speed
-        public float shiftAdd = 250.0f; //multiplied by how long shift is held.  Basically running
-        public float maxShift = 1000.0f; //Maximum speed when holdin gshift
-        public float camSens = 0.25f; //How sensitive it with mouse
-        private Vector3 lastMouse = new Vector3(255, 255, 255); //kind of in the middle of the screen, rather than at the top (play)
-        private float totalRun = 1.0f;
+        [Header("Movement")]
+        public float moveSpeed = 50f;
+        public float fastSpeedMultiplier = 3f;
+        public float rotationSpeed = 100f;
+
+        [Header("Mouse Look (Optional)")]
+        public bool enableMouseLook = true;
+        public float mouseSensitivity = 3f;
+
+        private float currentSpeed;
+        private float rotationX = 0f;
+        private float rotationY = 0f;
+
+        void Start()
+        {
+            currentSpeed = moveSpeed;
+            
+            // Initialize rotation from current camera rotation
+            Vector3 rot = transform.localEulerAngles;
+            rotationY = rot.y;
+            rotationX = rot.x;
+        }
 
         void Update()
         {
-            lastMouse = Input.mousePosition - lastMouse;
-            lastMouse = new Vector3(-lastMouse.y * camSens, lastMouse.x * camSens, 0);
-            lastMouse = new Vector3(transform.eulerAngles.x + lastMouse.x, transform.eulerAngles.y + lastMouse.y, 0);
-
-            if (Input.GetMouseButton(2))
-                transform.eulerAngles = lastMouse;
-            lastMouse = Input.mousePosition;
-            //Mouse  camera angle done.  
-
-            //Keyboard commands
-            Vector3 p = GetBaseInput();
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                totalRun += Time.deltaTime;
-                p = p * totalRun * shiftAdd;
-                p.x = Mathf.Clamp(p.x, -maxShift, maxShift);
-                p.y = Mathf.Clamp(p.y, -maxShift, maxShift);
-                p.z = Mathf.Clamp(p.z, -maxShift, maxShift);
-            }
-            else
-            {
-                totalRun = Mathf.Clamp(totalRun * 0.5f, 1f, 1000f);
-                p = p * mainSpeed;
-            }
-
-            p = p * Time.deltaTime;
-            Vector3 newPosition = transform.position;
-            if (Input.GetKey(KeyCode.Space))
-            { //If player wants to move on X and Z axis only
-                transform.Translate(p);
-                newPosition.x = transform.position.x;
-                newPosition.z = transform.position.z;
-                transform.position = newPosition;
-            }
-            else
-            {
-                transform.Translate(p);
-            }
-
+            HandleMovement();
+            HandleRotation();
+            HandleSpeedAdjustment();
         }
 
-        private Vector3 GetBaseInput()
-        { //returns the basic values, if it's 0 than it's not active.
-            Vector3 p_Velocity = new Vector3();
-            if (Input.GetKey(KeyCode.W))
+        void HandleMovement()
+        {
+            // Get speed multiplier
+            float speed = currentSpeed;
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                speed *= fastSpeedMultiplier;
+
+            // Calculate movement direction
+            Vector3 move = Vector3.zero;
+
+            // WASD movement (relative to camera direction)
+            if (Input.GetKey(KeyCode.W)) move += transform.forward;
+            if (Input.GetKey(KeyCode.S)) move -= transform.forward;
+            if (Input.GetKey(KeyCode.A)) move -= transform.right;
+            if (Input.GetKey(KeyCode.D)) move += transform.right;
+
+            // Q/E for up/down (world space)
+            if (Input.GetKey(KeyCode.E)) move += Vector3.up;
+            if (Input.GetKey(KeyCode.Q)) move -= Vector3.up;
+
+            // Apply movement
+            transform.position += move.normalized * speed * Time.deltaTime;
+        }
+
+        void HandleRotation()
+        {
+            // Arrow key rotation
+            if (Input.GetKey(KeyCode.UpArrow))    rotationX -= rotationSpeed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.DownArrow))  rotationX += rotationSpeed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.LeftArrow))  rotationY -= rotationSpeed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.RightArrow)) rotationY += rotationSpeed * Time.deltaTime;
+
+            // Mouse look (right-click + drag)
+            if (enableMouseLook && Input.GetMouseButton(1))
             {
-                p_Velocity += new Vector3(0, 0, 1);
+                rotationY += Input.GetAxis("Mouse X") * mouseSensitivity;
+                rotationX -= Input.GetAxis("Mouse Y") * mouseSensitivity;
             }
-            if (Input.GetKey(KeyCode.S))
+
+            // Clamp vertical rotation
+            rotationX = Mathf.Clamp(rotationX, -90f, 90f);
+
+            // Apply rotation
+            transform.localEulerAngles = new Vector3(rotationX, rotationY, 0);
+        }
+
+        void HandleSpeedAdjustment()
+        {
+            // Scroll wheel to adjust speed
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0)
             {
-                p_Velocity += new Vector3(0, 0, -1);
+                currentSpeed += scroll * 10f;
+                currentSpeed = Mathf.Clamp(currentSpeed, 1f, 200f);
             }
-            if (Input.GetKey(KeyCode.A))
-            {
-                p_Velocity += new Vector3(-1, 0, 0);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                p_Velocity += new Vector3(1, 0, 0);
-            }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                p_Velocity += new Vector3(0, 1, 0);
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                p_Velocity += new Vector3(0, -1, 0);
-            }
-            return p_Velocity;
         }
     }
 }
