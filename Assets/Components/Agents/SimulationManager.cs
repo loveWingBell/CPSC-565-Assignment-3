@@ -43,15 +43,14 @@ namespace Antymology.Agents
 
         public int CurrentGeneration { get; private set; } = 0;
         public int TotalNestBlocks   { get; private set; } = 0;
+        public int SurvivorsLastGen  { get; private set; } = 0;
+        public int CurrentTick       { get; private set; } = 0;  // Now public for UI
 
-        private int  currentTick  = 0;
-        private bool running      = false;
+        private bool running = false;
 
         void Start()
         {
-            // WorldManager calls StartSimulation via GenerateAnts().
-            // If you prefer, you can call it from here after a short delay:
-            // StartCoroutine(DelayedStart());
+            // Called by WorldManager
         }
 
         /// <summary>
@@ -61,6 +60,8 @@ namespace Antymology.Agents
         {
             CurrentGeneration = 0;
             TotalNestBlocks   = 0;
+            SurvivorsLastGen  = 0;
+            CurrentTick       = 0;
             workerGenePool.Clear();
             queenGenes = null;
             StartCoroutine(RunGeneration());
@@ -71,7 +72,7 @@ namespace Antymology.Agents
         private IEnumerator RunGeneration()
         {
             CurrentGeneration++;
-            currentTick = 0;
+            CurrentTick = 0;
             running     = true;
 
             SpawnAnts();
@@ -81,24 +82,23 @@ namespace Antymology.Agents
             {
                 yield return new WaitForSeconds(tickInterval);
 
-                currentTick++;
+                CurrentTick++;
                 TickAllAnts();
                 RemoveDeadAnts();
 
                 bool allDead = allAnts.Count == 0;
-                bool timeUp  = currentTick >= maxTicksPerGeneration;
+                bool timeUp  = CurrentTick >= maxTicksPerGeneration;
 
                 if (allDead || timeUp)
                     running = false;
             }
 
-            // Record nest blocks placed this generation
-            if (Queen != null)
-                TotalNestBlocks += Queen.nestBlocksPlaced;
+            // Count nests BEFORE despawning (queen might be dead)
+            int nestsThisGen = (Queen != null) ? Queen.nestBlocksPlaced : 0;
+            TotalNestBlocks += nestsThisGen;
+            SurvivorsLastGen = allAnts.Count;
 
-            Debug.Log($"[Gen {CurrentGeneration}] Nest blocks this gen: " +
-                      (Queen != null ? Queen.nestBlocksPlaced : 0) +
-                      $" | Total: {TotalNestBlocks}");
+            Debug.Log($"[Gen {CurrentGeneration}] Nest blocks: {nestsThisGen} | Total: {TotalNestBlocks} | Survivors: {SurvivorsLastGen}/{workerCount + 1}");
 
             EvolveGenes();
             DespawnAnts();
@@ -148,7 +148,7 @@ namespace Antymology.Agents
             if (queenGenes != null)
                 System.Array.Copy(queenGenes, Queen.genes, queenGenes.Length);
             else
-            Queen.RandomiseGenes();
+                Queen.RandomiseGenes();
             allAnts.Add(Queen);
 
             // Spawn workers
@@ -288,6 +288,12 @@ namespace Antymology.Agents
             for (int y = maxY; y >= 0; y--)
                 if (!(WorldManager.Instance.GetBlock(x, y, z) is AirBlock)) return y;
             return -1;
+        }
+
+        // Helper for UI to get all ants
+        public List<AntBase> GetAllAnts()
+        {
+            return new List<AntBase>(allAnts);
         }
     }
 }

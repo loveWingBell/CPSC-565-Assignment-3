@@ -8,7 +8,6 @@ namespace Antymology.UI
 {
     /// <summary>
     /// Displays generation, nest blocks, tick count, and survivor count.
-    /// Attach to a UI Text object.
     /// </summary>
     public class NestCounterUI : MonoBehaviour
     {
