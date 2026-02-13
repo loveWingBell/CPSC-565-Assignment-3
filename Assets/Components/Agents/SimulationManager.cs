@@ -44,7 +44,7 @@ namespace Antymology.Agents
         public int CurrentGeneration { get; private set; } = 0;
         public int TotalNestBlocks   { get; private set; } = 0;
         public int SurvivorsLastGen  { get; private set; } = 0;
-        public int CurrentTick       { get; private set; } = 0;  // Now public for UI
+        public int CurrentTick       { get; private set; } = 0;
 
         private bool running = false;
 
@@ -95,7 +95,7 @@ namespace Antymology.Agents
 
             // Count nests BEFORE despawning (queen might be dead)
             int nestsThisGen = (Queen != null) ? Queen.nestBlocksPlaced : 0;
-            TotalNestBlocks += nestsThisGen;
+            //TotalNestBlocks += nestsThisGen;
             SurvivorsLastGen = allAnts.Count;
 
             Debug.Log($"[Gen {CurrentGeneration}] Nest blocks: {nestsThisGen} | Total: {TotalNestBlocks} | Survivors: {SurvivorsLastGen}/{workerCount + 1}");
@@ -294,6 +294,12 @@ namespace Antymology.Agents
         public List<AntBase> GetAllAnts()
         {
             return new List<AntBase>(allAnts);
+        }
+
+        // Get live nest count directly from the queen
+        public int GetCurrentNestCount()
+        {
+            return TotalNestBlocks + (Queen != null ? Queen.nestBlocksPlaced : 0);
         }
     }
 }

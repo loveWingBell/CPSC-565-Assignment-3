@@ -36,7 +36,7 @@ namespace Antymology.UI
                 SimulationManager.Instance.CurrentGeneration,
                 SimulationManager.Instance.CurrentTick,
                 SimulationManager.Instance.maxTicksPerGeneration,
-                SimulationManager.Instance.TotalNestBlocks,
+                SimulationManager.Instance.GetCurrentNestCount(),
                 SimulationManager.Instance.SurvivorsLastGen,
                 total,
                 alive,
