@@ -38,9 +38,27 @@ namespace Antymology.Agents
         public int ticksAlive = 0;
         public int mulchConsumed = 0;
 
+        // Health sharing indicator
+        private GameObject healthShareParticle;
+        private float healthShareTimer = 0f;
+
         protected virtual void Awake()
         {
             health = maxHealth;
+        }
+
+        // Update health share indicator
+        void Update()
+        {
+            if (healthShareTimer > 0)
+            {
+                healthShareTimer -= Time.deltaTime;
+                if (healthShareTimer <= 0 && healthShareParticle != null)
+                {
+                    Destroy(healthShareParticle);
+                    healthShareParticle = null;
+                }
+            }
         }
 
         /// <summary>
@@ -247,6 +265,34 @@ namespace Antymology.Agents
             if (amount <= 0) return;
             health -= amount;
             partner.health = Mathf.Min(partner.health + amount, partner.maxHealth);
+            
+            // Show health share indicator
+            ShowHealthShareIndicator();
+            partner.ShowHealthShareIndicator();
+            
+            Debug.Log($"{gameObject.name} shared {amount:F1} health with {partner.gameObject.name}");
+        }
+
+        private void ShowHealthShareIndicator()
+        {
+            // Clean up old indicator
+            if (healthShareParticle != null)
+                Destroy(healthShareParticle);
+
+            // Create green glowing sphere above ant
+            healthShareParticle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            healthShareParticle.transform.position = transform.position + Vector3.up * 1.5f;
+            healthShareParticle.transform.localScale = Vector3.one * 0.5f;
+            
+            var renderer = healthShareParticle.GetComponent<Renderer>();
+            renderer.material = new Material(Shader.Find("Standard"));
+            renderer.material.color = Color.green;
+            renderer.material.EnableKeyword("_EMISSION");
+            renderer.material.SetColor("_EmissionColor", Color.green * 2f);
+            
+            Destroy(healthShareParticle.GetComponent<Collider>());
+            
+            healthShareTimer = 1.0f; // Show for 1 second
         }
 
         // Utility ------------------------------
@@ -315,6 +361,12 @@ namespace Antymology.Agents
         public virtual float Fitness()
         {
             return ticksAlive + mulchConsumed * 10f;
+        }
+
+        void OnDestroy()
+        {
+            if (healthShareParticle != null)
+                Destroy(healthShareParticle);
         }
     }
 }
