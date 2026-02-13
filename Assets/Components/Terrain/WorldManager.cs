@@ -1,4 +1,6 @@
-﻿using Antymology.Helpers;
+﻿// CPSC 565 Assignment 3 - Elda Britu - 30158734 - February 13, 2025
+
+using Antymology.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -184,7 +186,6 @@ namespace Antymology.Terrain
             int LocalXCoordinate, int LocalYCoordinate, int LocalZCoordinate,
             AbstractBlock toSet)
         {
-            // SPACED OUT FOR NOW, WILL SHORTEN LATER
             if
             (
                 LocalXCoordinate < 0 ||
@@ -384,7 +385,6 @@ namespace Antymology.Terrain
             int updateZ = Mathf.FloorToInt(worldZCoordinate / ConfigurationManager.Instance.Chunk_Diameter);
             Chunks[updateX, updateY, updateZ].updateNeeded = true;
             
-            // SPACED OUT FOR NOW, WILL SHORTEN LATER
             // Also flag all 6 neighbours for update as well
             if(updateX - 1 >= 0)
                 Chunks[updateX - 1, updateY, updateZ].updateNeeded = true;
