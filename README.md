@@ -1,4 +1,4 @@
-# Evolutionary Ant Colony Simulation - CPSC 565 - Assignment 3
+# Antymology - CPSC 565 - Assignment 3
 ## Elda Britu - 30158734 - February 13, 2026
 
 ---
@@ -218,6 +218,8 @@ Cooper, Davies. “Daviescooper/Antymology: The Underlying Framework for CPSC 56
 DJ Oamen. “How to Fix Pink Textures in Unity 6.” YouTube, October 27, 2024. Accessed February 11, 2026. https://www.youtube.com/watch?v=8MplcYrkwqU. 
 
 “Elitist Genetic Algorithm #.” Elitist Genetic Algorithm | Algorithm Afternoon, April 17, 2024. Accessed February 12, 2026. https://algorithmafternoon.com/genetic/elitist_genetic_algorithm/.
+
+“HTML Text Formatting.” W3Schools Online Web Tutorials. Accessed February 12, 2026. https://www.w3schools.com/html/html_formatting.asp. 
 
 Mastering 2D cameras in unity: A tutorial for game developers | toptal®. Accessed February 13, 2026. https://www.toptal.com/developers/unity/2d-camera-in-unity. 
 
