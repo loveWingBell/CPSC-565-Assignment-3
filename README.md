@@ -119,7 +119,7 @@ I wasn't able to get the debug menu nor the nest counter to properly count the a
 2. Open the project in Unity Hub
 - Note: When you first open the project, Unity will complain that it is an old version. Select the Unity version 6000.* and Unity will upgrade the project to the latest version.
 
-3. Nagivate to `simulator.unity` and load the scene.
+3. Nagivate to `Assets/simulator.unity` and load the scene.
 
 4. Ensure these GameObjects exist in your scene:
    - `MainCamera` (with FlyCamera script)
