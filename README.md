@@ -76,15 +76,15 @@ QUEEN:
   Eat Mulch:
   Dig:
   Share Health:
-  Health: 267/300       ← Current health
-  Nests: 12             ← Nests placed this generation
+  Health: xxx/xxx       ← Current health
+  Nests: xx             ← Nests placed this generation
 
 WORKERS (average):      ← Averaged across all living workers
   Seek Mulch:
   Random Move:
   ...
-  Avg Health: 156
-  Count: 10             ← Number of workers alive
+  Avg Health: xxx
+  Count: xx             ← Number of workers alive
 ```
 
 ### Console Output
