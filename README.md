@@ -99,6 +99,9 @@ Logged at the end of each generation.
 - **Red Bar:** Health < 25%
 - Additionally, the **green glowing sphere** indicates that ants are sharing health (lasts 1 second)
 
+### Note
+I wasn't able to get the debug menu nor the nest counter to properly count the amount of nests the queen lays. It resets with her death. I tried to fix it but I could not manage to. My apologies.
+
 ---
 
 ## How to Use the Model
