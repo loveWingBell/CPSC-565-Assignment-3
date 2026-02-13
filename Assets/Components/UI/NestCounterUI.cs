@@ -30,13 +30,24 @@ namespace Antymology.UI
 
             int alive = SimulationManager.Instance.GetAllAnts().Count;
             int total = SimulationManager.Instance.workerCount + 1;
+            
+            int nestsThisGen = 0;
+            var queen = SimulationManager.Instance.Queen;
+            if (queen != null)
+            {
+                nestsThisGen = queen.nestBlocksPlaced;
+            }
+            
+            // Total = previous gens + current gen
+            int totalNests = SimulationManager.Instance.TotalNestBlocks + nestsThisGen;
 
             string output = string.Format(
-                "Generation: {0}\nTick: {1} / {2}\nNest Blocks: {3}\nSurvivors (last gen): {4}/{5}\nCurrent Ants Alive: {6}/{7}",
+                "Generation: {0}\nTick: {1} / {2}\nNest Blocks: {3} (this gen: {4})\nSurvivors (last gen): {5}/{6}\nCurrent Ants Alive: {7}/{8}",
                 SimulationManager.Instance.CurrentGeneration,
                 SimulationManager.Instance.CurrentTick,
                 SimulationManager.Instance.maxTicksPerGeneration,
-                SimulationManager.Instance.GetCurrentNestCount(),
+                totalNests,
+                nestsThisGen,
                 SimulationManager.Instance.SurvivorsLastGen,
                 total,
                 alive,
