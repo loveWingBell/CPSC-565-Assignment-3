@@ -30,7 +30,7 @@ namespace Antymology.UI
 
             int alive = SimulationManager.Instance.GetAllAnts().Count;
             int total = SimulationManager.Instance.workerCount + 1;
-            
+        
             int nestsThisGen = 0;
             var queen = SimulationManager.Instance.Queen;
             if (queen != null)
