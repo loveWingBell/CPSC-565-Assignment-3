@@ -95,7 +95,7 @@ namespace Antymology.Agents
 
             // Count nests BEFORE despawning (queen might be dead)
             int nestsThisGen = (Queen != null) ? Queen.nestBlocksPlaced : 0;
-            //TotalNestBlocks += nestsThisGen;
+            TotalNestBlocks += nestsThisGen;
             SurvivorsLastGen = allAnts.Count;
 
             Debug.Log($"[Gen {CurrentGeneration}] Nest blocks: {nestsThisGen} | Total: {TotalNestBlocks} | Survivors: {SurvivorsLastGen}/{workerCount + 1}");
