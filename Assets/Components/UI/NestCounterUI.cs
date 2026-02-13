@@ -6,6 +6,10 @@ using Antymology.Agents;
 
 namespace Antymology.UI
 {
+    /// <summary>
+    /// Displays generation, nest blocks, tick count, and survivor count.
+    /// Attach to a UI Text object.
+    /// </summary>
     public class NestCounterUI : MonoBehaviour
     {
         public Text uiText;
@@ -14,15 +18,33 @@ namespace Antymology.UI
         {
             if (uiText == null)
                 uiText = GetComponent<Text>();
+            
+            if (uiText == null)
+            {
+                Debug.LogError("NestCounterUI: Could not find Text component!");
+            }
         }
 
         void Update()
         {
             if (SimulationManager.Instance == null || uiText == null) return;
 
-            uiText.text =
-                $"Generation:  {SimulationManager.Instance.CurrentGeneration}\n" +
-                $"Nest Blocks: {SimulationManager.Instance.TotalNestBlocks}";
+            int alive = SimulationManager.Instance.GetAllAnts().Count;
+            int total = SimulationManager.Instance.workerCount + 1;
+
+            string output = string.Format(
+                "Generation: {0}\nTick: {1} / {2}\nNest Blocks: {3}\nSurvivors (last gen): {4}/{5}\nCurrent Ants Alive: {6}/{7}",
+                SimulationManager.Instance.CurrentGeneration,
+                SimulationManager.Instance.CurrentTick,
+                SimulationManager.Instance.maxTicksPerGeneration,
+                SimulationManager.Instance.TotalNestBlocks,
+                SimulationManager.Instance.SurvivorsLastGen,
+                total,
+                alive,
+                total
+            );
+
+            uiText.text = output;
         }
     }
 }
